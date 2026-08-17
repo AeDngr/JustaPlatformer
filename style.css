@@ -1,0 +1,29 @@
+body{
+ margin:0;
+ overflow:hidden;
+ background:#111;
+}
+canvas{
+ display:block;
+}
+#ui{
+ position:fixed;
+ top:15px;
+ left:15px;
+ color:white;
+ font-size:22px;
+}
+#mobile{
+ position:fixed;
+ bottom:20px;
+ width:100%;
+ display:flex;
+ justify-content:center;
+ gap:20px;
+}
+#mobile button{
+ width:70px;
+ height:70px;
+ font-size:30px;
+ border-radius:50%;
+}
