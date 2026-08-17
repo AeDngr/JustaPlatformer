@@ -1,0 +1,7 @@
+body{margin:0;overflow:hidden;background:#111}
+canvas{display:block}
+#menu{position:fixed;z-index:3;top:50%;left:50%;transform:translate(-50%,-50%);color:white;text-align:center}
+button{font-size:20px;padding:10px;margin:5px}
+#info{position:fixed;z-index:2;top:10px;left:10px;color:white}
+#mobile{position:fixed;bottom:20px;width:100%;display:flex;justify-content:center;gap:20px}
+#mobile button{width:70px;height:70px;border-radius:50%}
