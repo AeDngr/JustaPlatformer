@@ -1,0 +1,40 @@
+JustaPlatformer
+
+├ index.html
+├ main.js
+├ style.css
+
+├ js/
+│
+├ game.js
+├ ui.js
+├ chaser.js
+│
+├ object/
+│  ├ objects.js
+│  ├ effects.js
+│  └ triggers.js
+│
+├ physics/
+│  ├ physics.js
+│  ├ calculate.js
+│  └ collision.js
+│
+├ item/
+│  ├ item.js
+│  ├ skin.js
+│  └ ...
+│
+├ stage/
+│  ├ stage.js
+│  ├ stageData.js
+│  └ ...
+│
+├ setting/
+│  ├ setting.js
+│  └ constant.js
+│
+└ assets/
+   ├ image/
+   ├ sound/
+   └ ...

@@ -1,0 +1,1263 @@
+const tileSize=32;
+
+const objectId={ player:100,
+
+    platform:200,
+    coin:201,
+    secretCoin:202,
+    diamond:203,
+
+    movingPlatform:210,
+    fallingPlatform:211,
+    breakablePlatform:212,
+    disappearPlatform:213,
+    appearPlatform:214,
+    rotatePlatform:215,
+    conveyorPlatform:216,
+    icePlatform:217,
+    bouncePlatform:218,
+    doorPlatform:219,
+    oneWayPlatform:220,
+    movingWall:221,
+    fakePlatform:222,
+    slopePlatform:223,
+
+    enemy:300,
+    chaserEnemy:301,
+    flyEnemy:302,
+    jumpEnemy:303,
+    shootEnemy:304,
+    bossEnemy:305,
+
+    spike:400,
+    movingSaw:401,
+    laser:402,
+    fallingRock:403,
+    water:404,
+    voidZone:405,
+    windZone:406,
+    currentZone:407,
+
+    portal:500,
+    gravityPortal:501,
+    speedPortal:502,
+    slowPortal:503,
+    timePortal:504,
+    teleportPortal:505,
+    ghostPortal:506,
+    sizePortal:507,
+    invisiblePortal:508,
+    gravityZone:509,
+
+    jumpPad:600,
+    superJumpPad:601,
+    gravityPad:602,
+    wallJumpPad:603,
+    dashPad:604,
+    speedPad:605,
+    iceBreakPad:606,
+
+    triggerOrb:700,
+    removeTriggerOrb:701,
+    appearTriggerOrb:702,
+    sizeTriggerOrb:703,
+    moveTriggerOrb:704,
+    switchTriggerOrb:705,
+    gravityTriggerOrb:706,
+    enemyTriggerOrb:707,
+    checkpointOrb:708,
+    timeStopOrb:709,
+    cloneOrb:710,
+    keyOrb:711,
+    cameraOrb:712,
+
+    saveFlag:713,
+    cameraZone:714,
+
+    projectile:800
+
+};
+
+const objectType={ player:“player”, item:“item”, platform:“platform”,
+enemy:“enemy”, hazard:“hazard”, projectile:“projectile”,
+portal:“portal”, pad:“pad”, trigger:“trigger”, zone:“zone” };
+
+const objectData={
+
+    [objectId.player]:{
+        type:objectType.player,
+        width:1,
+        height:1,
+        layer:2,
+        physics:{
+            solid:false,
+            damage:false
+        },
+        tags:[
+            "player"
+        ]
+    },
+
+    [objectId.coin]:{
+        type:objectType.item,
+        width:0.5,
+        height:0.5,
+        layer:2,
+        item:{
+            collect:true
+        },
+        tags:[
+            "item",
+            "coin"
+        ]
+    },
+
+    [objectId.secretCoin]:{
+        type:objectType.item,
+        width:0.5,
+        height:0.5,
+        layer:2,
+        item:{
+            collect:true,
+            secret:true
+        },
+        tags:[
+            "item",
+            "secret",
+            "coin"
+        ]
+    },
+
+    [objectId.diamond]:{
+        type:objectType.item,
+        width:0.5,
+        height:0.5,
+        layer:2,
+        item:{
+            collect:true,
+            currency:true
+        },
+        tags:[
+            "item",
+            "currency"
+        ]
+    },
+
+    [objectId.platform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        tags:[
+            "platform",
+            "solid"
+        ]
+    },
+
+    [objectId.movingPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        movement:{
+            type:"moving",
+        },
+        tags:[
+            "platform",
+            "solid",
+            "moving"
+        ]
+    },
+
+    [objectId.fallingPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        movement:{
+            type:"falling",				
+        },
+        physics:{
+            solid:true
+        },
+        tags:[
+            "platform",
+            "solid",
+            "falling"
+        ]
+    },
+
+    [objectId.breakablePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        breakable:{
+            enabled:true,
+            respawn:true,
+            respawnTime:3000
+        },
+        tags:[
+            "platform",
+            "solid",
+            "breakable"
+        ]
+    },
+
+    [objectId.disappearPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        effect:{
+            type:"disappear",
+            removeForever:false
+        },
+        tags:[
+            "platform",
+            "solid",
+            "disappear"
+        ]
+    },
+
+    [objectId.appearPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        trigger:{
+            required:true
+        },
+        effect:{
+            type:"appear",
+            hidden:true
+        },
+        tags:[
+            "platform",
+            "solid",
+            "hidden"
+        ]
+    },
+
+    [objectId.rotatePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        movement:{
+            type:"rotate"
+        },
+        tags:[
+            "platform",
+            "solid",
+            "rotate"
+        ]
+    },
+
+    [objectId.conveyorPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        movement:{
+            type:"conveyor",
+            speed:2,
+            direction:"right"
+        },
+        tags:[
+            "platform",
+            "solid",
+            "conveyor"
+        ]
+    },
+
+    [objectId.icePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true,
+            friction:0.1
+        },
+        effect:{
+            type:"ice"
+        },
+        tags:[
+            "platform",
+            "solid",
+            "ice"
+        ]
+    },
+
+    [objectId.bouncePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        effect:{
+            type:"bounce",
+            power:15
+        },
+        tags:[
+            "platform",
+            "solid",
+            "bounce"
+        ]
+    },
+
+    [objectId.doorPlatform]:{
+        type:objectType.platform,
+        width:2,
+        height:3,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        trigger:{
+            locked:true,
+            keyRequired:true
+        },
+        tags:[
+            "platform",
+            "solid",
+            "door"
+        ]
+    },
+
+    [objectId.oneWayPlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true,
+            oneWay:true
+        },
+        tags:[
+            "platform",
+            "oneWay"
+        ]
+    },
+
+    [objectId.movingWall]:{
+        type:objectType.platform,
+        width:1,
+        height:4,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        movement:{
+            type:"moving"
+        },
+        tags:[
+            "platform",
+            "solid",
+            "wall",
+            "moving"
+        ]
+    },
+
+    [objectId.fakePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:1,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        effect:{
+            type:"fake",
+            removeForever:true
+        },
+        tags:[
+            "platform",
+            "solid",
+            "fake"
+        ]
+    },
+
+    [objectId.slopePlatform]:{
+        type:objectType.platform,
+        width:4,
+        height:2,
+        layer:1,
+        physics:{
+            solid:true
+        },
+        slope:{
+            direction:"right",
+            angle:45
+        },
+        tags:[
+            "platform",
+            "solid",
+            "slope"
+        ]
+    },
+
+    [objectId.enemy]:{
+        type:objectType.enemy,
+        width:1,
+        height:1,
+        layer:3,
+        ai:{
+            health:1,
+            speed:1
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "damage"
+        ]
+    },
+
+    [objectId.chaserEnemy]:{
+        type:objectType.enemy,
+        width:1,
+        height:1,
+        layer:3,
+        ai:{
+            health:2,
+            speed:2,
+            chase:true
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "damage",
+            "chase"
+        ]
+    },
+
+    [objectId.flyEnemy]:{
+        type:objectType.enemy,
+        width:1,
+        height:1,
+        layer:3,
+        ai:{
+            health:2,
+            speed:1,
+            fly:true
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "damage",
+            "fly"
+        ]
+    },
+
+    [objectId.jumpEnemy]:{
+        type:objectType.enemy,
+        width:1,
+        height:1,
+        layer:3,
+        ai:{
+            health:2,
+            jump:true,
+            jumpPower:10
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "damage",
+            "jump"
+        ]
+    },
+
+    [objectId.shootEnemy]:{
+        type:objectType.enemy,
+        width:1,
+        height:1,
+        layer:3,
+        ai:{
+            health:3,
+            shoot:true,
+            projectileId:objectId.projectile
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "damage",
+            "shoot"
+        ]
+    },
+
+    [objectId.bossEnemy]:{
+        type:objectType.enemy,
+        width:3,
+        height:3,
+        layer:3,
+        ai:{
+            health:50,
+            boss:true,
+            phase:1
+        },
+        physics:{
+            damage:true
+        },
+        tags:[
+            "enemy",
+            "boss",
+            "damage"
+        ]
+    },
+
+    [objectId.spike]:{
+        type:objectType.hazard,
+        width:1,
+        height:1,
+        layer:2,
+        physics:{
+            damage:true
+        },
+        tags:[
+            "hazard",
+            "damage"
+        ]
+    },
+
+    [objectId.movingSaw]:{
+        type:objectType.hazard,
+        width:1,
+        height:1,
+        layer:2,
+        physics:{
+            damage:true
+        },
+        movement:{
+            moving:true,
+            speed:3
+        },
+        tags:[
+            "hazard",
+            "damage",
+            "moving"
+        ]
+    },
+
+    [objectId.laser]:{
+        type:objectType.hazard,
+        width:0.25,
+        height:4,
+        layer:2,
+        physics:{
+            damage:true
+        },
+        effect:{
+            active:false,
+            interval:120
+        },
+        tags:[
+            "hazard",
+            "damage",
+            "laser"
+        ]
+    },
+
+    [objectId.fallingRock]:{
+        type:objectType.hazard,
+        width:1,
+        height:1,
+        layer:2,
+        physics:{
+            damage:true,
+            gravity:true
+        },
+        tags:[
+            "hazard",
+            "damage",
+            "falling"
+        ]
+    },
+
+    [objectId.water]:{
+        type:objectType.hazard,
+        width:1,
+        height:1,
+        layer:2,
+        physics:{
+            damage:false,
+            liquid:true
+        },
+        tags:[
+            "hazard",
+            "liquid"
+        ]
+    },
+
+    [objectId.voidZone]:{
+        type:objectType.hazard,
+        width:4,
+        height:4,
+        layer:0,
+        physics:{
+            damage:true,
+            instantDeath:true
+        },
+        tags:[
+            "hazard",
+            "void",
+            "death"
+        ]
+    },
+
+    [objectId.windZone]:{
+        type:objectType.zone,
+        width:4,
+        height:4,
+        layer:0,
+        effect:{
+            force:1
+        },
+        tags:[
+            "zone",
+            "wind"
+        ]
+    },
+
+    [objectId.currentZone]:{
+        type:objectType.zone,
+        width:4,
+        height:4,
+        layer:0,
+        effect:{
+            force:1
+        },
+        tags:[
+            "zone",
+            "current"
+        ]
+    },
+
+    [objectId.portal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"none",
+            value:null
+        },
+        tags:[
+            "portal"
+        ]
+    },
+
+    [objectId.gravityPortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"gravity",
+            value:-1
+        },
+        tags:[
+            "portal",
+            "gravity"
+        ]
+    },
+
+    [objectId.speedPortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"speed",
+            value:2
+        },
+        tags:[
+            "portal",
+            "speed"
+        ]
+    },
+
+    [objectId.slowPortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"speed",
+            value:0.5
+        },
+        tags:[
+            "portal",
+            "slow"
+        ]
+    },
+
+    [objectId.timePortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"timeScale",
+            value:2
+        },
+        tags:[
+            "portal",
+            "time"
+        ]
+    },
+
+    [objectId.teleportPortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"teleport",
+            value:null
+        },
+        tags:[
+            "portal",
+            "teleport"
+        ]
+    },
+
+    [objectId.ghostPortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"ghost",
+            value:true
+        },
+        tags:[
+            "portal",
+            "ghost"
+        ]
+    },
+
+    [objectId.sizePortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"size",
+            value:0.5
+        },
+        tags:[
+            "portal",
+            "size"
+        ]
+    },
+
+    [objectId.invisiblePortal]:{
+        type:objectType.portal,
+        width:1,
+        height:2,
+        layer:2,
+        effect:{
+            type:"invisible",
+            value:true
+        },
+        tags:[
+            "portal",
+            "invisible"
+        ]
+    },
+
+    [objectId.gravityZone]:{
+        type:objectType.zone,
+        width:4,
+        height:4,
+        layer:0,
+        effect:{
+            type:"gravity",
+            value:0.5
+        },
+        tags:[
+            "zone",
+            "gravity"
+        ]
+    },
+
+    [objectId.jumpPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"jump",
+            value:16
+        },
+        tags:[
+            "pad",
+            "jump"
+        ]
+    },
+
+    [objectId.superJumpPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"jump",
+            value:30
+        },
+        tags:[
+            "pad",
+            "superJump"
+        ]
+    },
+
+    [objectId.gravityPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"gravity",
+            value:-1
+        },
+        tags:[
+            "pad",
+            "gravity"
+        ]
+    },
+
+    [objectId.wallJumpPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"wallJump",
+            value:true
+        },
+        tags:[
+            "pad",
+            "wallJump"
+        ]
+    },
+
+    [objectId.dashPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"dash",
+            value:10
+        },
+        tags:[
+            "pad",
+            "dash"
+        ]
+    },
+
+    [objectId.speedPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"speed",
+            value:2
+        },
+        tags:[
+            "pad",
+            "speed"
+        ]
+    },
+
+    [objectId.iceBreakPad]:{
+        type:objectType.pad,
+        width:1,
+        height:0.5,
+        layer:2,
+        effect:{
+            type:"removeIce",
+            value:true
+        },
+        tags:[
+            "pad",
+            "ice"
+        ]
+    },
+
+    [objectId.triggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"none",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger"
+        ]
+    },
+
+    [objectId.removeTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"remove",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "remove"
+        ]
+    },
+
+    [objectId.appearTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"appear",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "appear"
+        ]
+    },
+
+    [objectId.sizeTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"size",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "size"
+        ]
+    },
+
+    [objectId.moveTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"move",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "move"
+        ]
+    },
+
+    [objectId.switchTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"switch",
+            target:null,
+            repeat:true
+        },
+        tags:[
+            "trigger",
+            "switch"
+        ]
+    },
+
+    [objectId.gravityTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"gravity",
+            target:null,
+            repeat:true
+        },
+        tags:[
+            "trigger",
+            "gravity"
+        ]
+    },
+
+    [objectId.enemyTriggerOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"spawnEnemy",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "enemy"
+        ]
+    },
+
+    [objectId.checkpointOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"checkpoint",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "checkpoint"
+        ]
+    },
+
+    [objectId.timeStopOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"timeStop",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "timeStop"
+        ]
+    },
+
+    [objectId.cloneOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"clone",
+            target:null,
+            repeat:false
+        },
+        tags:[
+            "trigger",
+            "clone"
+        ]
+    },
+
+    [objectId.keyOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"key",
+            target:null
+        },
+        tags:[
+            "trigger",
+            "key"
+        ]
+    },
+
+    [objectId.cameraOrb]:{
+        type:objectType.trigger,
+        width:0.8,
+        height:0.8,
+        layer:2,
+        trigger:{
+            action:"camera",
+            target:null
+        },
+        tags:[
+            "trigger",
+            "camera"
+        ]
+    },
+
+    [objectId.saveFlag]:{
+        type:objectType.trigger,
+        width:1,
+        height:1,
+        layer:2,
+        trigger:{
+            action:"save",
+            target:null
+        },
+        tags:[
+            "utility",
+            "save"
+        ]
+    },
+
+    [objectId.cameraZone]:{
+        type:objectType.zone,
+        width:8,
+        height:8,
+        layer:0,
+        effect:{
+            type:"camera",
+            value:null
+        },
+        tags:[
+            "utility",
+            "camera"
+        ]
+    },
+
+    [objectId.projectile]:{
+        type:objectType.projectile,
+        width:0.25,
+        height:0.25,
+        layer:3,
+        physics:{
+            damage:true,
+        },
+	movement:{
+            speed:5
+	},
+        tags:[
+            "projectile",
+            "damage"
+        ]
+    }
+};
+
+function getObjectData(id){
+
+    const data=objectData[id];
+
+    if(!data){
+        return {
+            type:"none",
+            width:1,
+            height:1,
+            layer:0,
+            tags:[]
+        };
+    }
+
+    return {
+        ...data,
+        tags:[
+            ...(data.tags||[])
+        ]
+    };
+
+}
+
+class GameObject{
+
+    constructor(id,x,y,data={}){
+
+        const object=getObjectData(id);
+
+        this.id=id;
+
+        this.x=x;
+        this.y=y;
+
+        this.type=
+        object.type;
+
+        this.width=
+        object.width*tileSize;
+
+        this.height=
+        object.height*tileSize;
+
+        this.layer=
+        object.layer;
+
+        this.tags=[
+            ...object.tags
+        ];
+
+        this.active=true;
+
+        this.visible=true;
+
+        this.effects={};
+
+        this.data={
+            ...object,
+            ...data
+        };
+
+    }
+
+
+    update(){}
+
+
+    onCollision(){}
+
+
+    destroy(){
+
+        this.active=false;
+
+    }
+
+}
+
+function createObject(id,x,y,data={}){
+
+    return new GameObject(
+        id,
+        x,
+        y,
+        data
+    );
+
+}
